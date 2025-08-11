@@ -131,10 +131,10 @@
 </template>
 <script lang="ts" name="DeliveryPickUpStore" setup>
 import * as DeliveryPickUpStoreApi from '@/api/mall/trade/delivery/pickUpStore'
-import DeliveryPickUpStoreForm from './PickUpStoreForm.vue'
-import DeliveryPickUpStoreBindForm from './DeliveryPickUpStoreBindForm.vue'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
+import DeliveryPickUpStoreBindForm from './DeliveryPickUpStoreBindForm.vue'
+import DeliveryPickUpStoreForm from './PickUpStoreForm.vue'
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

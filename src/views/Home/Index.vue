@@ -18,7 +18,7 @@
               </div>
             </div>
           </el-col>
-          <el-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
+          <!-- <el-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
             <div class="h-70px flex items-center justify-end lt-sm:mt-10px">
               <div class="px-8px text-right">
                 <div class="mb-16px text-14px text-gray-400">{{ t('workplace.project') }}</div>
@@ -50,14 +50,14 @@
                 />
               </div>
             </div>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-skeleton>
     </el-card>
   </div>
 
   <el-row class="mt-8px" :gutter="8" justify="space-between">
-    <el-col :xl="16" :lg="16" :md="24" :sm="24" :xs="24" class="mb-8px">
+    <!-- <el-col :xl="16" :lg="16" :md="24" :sm="24" :xs="24" class="mb-8px">
       <el-card shadow="never">
         <template #header>
           <div class="h-3 flex justify-between">
@@ -128,7 +128,7 @@
           </el-row>
         </el-skeleton>
       </el-card>
-    </el-col>
+    </el-col> -->
     <el-col :xl="8" :lg="8" :md="24" :sm="24" :xs="24" class="mb-8px">
       <el-card shadow="never">
         <template #header>
@@ -149,7 +149,7 @@
           </el-row>
         </el-skeleton>
       </el-card>
-      <el-card shadow="never" class="mt-8px">
+      <!-- <el-card shadow="never" class="mt-8px">
         <template #header>
           <div class="h-3 flex justify-between">
             <span>{{ t('workplace.notice') }}</span>
@@ -176,20 +176,19 @@
             <el-divider />
           </div>
         </el-skeleton>
-      </el-card>
+      </el-card> -->
     </el-col>
   </el-row>
 </template>
 <script lang="ts" setup>
-import { set } from 'lodash-es'
 import { EChartsOption } from 'echarts'
-import { formatTime } from '@/utils'
+import { set } from 'lodash-es'
 
 import { useUserStore } from '@/store/modules/user'
 // import { useWatermark } from '@/hooks/web/useWatermark'
-import type { WorkplaceTotal, Project, Notice, Shortcut } from './types'
-import { pieOptions, barOptions } from './echarts-data'
 import { useRouter } from 'vue-router'
+import { barOptions, pieOptions } from './echarts-data'
+import type { Notice, Project, Shortcut, WorkplaceTotal } from './types'
 
 defineOptions({ name: 'Index' })
 

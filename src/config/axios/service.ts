@@ -1,7 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
-import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
-import qs from 'qs'
 import { config } from '@/config/axios/config'
 import {
   getAccessToken,
@@ -11,10 +9,12 @@ import {
   removeToken,
   setToken
 } from '@/utils/auth'
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+import qs from 'qs'
 import errorCode from './errorCode'
 
-import { resetRouter } from '@/router'
 import { deleteUserCache } from '@/hooks/web/useCache'
+import { resetRouter } from '@/router'
 
 const tenantEnable = import.meta.env.VITE_APP_TENANT_ENABLE
 const { result_code, base_url, request_timeout } = config

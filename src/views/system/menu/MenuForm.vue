@@ -113,10 +113,10 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import * as MenuApi from '@/api/system/menu'
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 import { CommonStatusEnum, SystemMenuTypeEnum } from '@/utils/constants'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { defaultProps, handleTree } from '@/utils/tree'
 
 defineOptions({ name: 'SystemMenuForm' })

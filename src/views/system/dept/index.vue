@@ -116,12 +116,12 @@
   <DeptForm ref="formRef" @success="getList" />
 </template>
 <script lang="ts" setup>
+import * as DeptApi from '@/api/system/dept'
+import * as UserApi from '@/api/system/user'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import { handleTree } from '@/utils/tree'
-import * as DeptApi from '@/api/system/dept'
 import DeptForm from './DeptForm.vue'
-import * as UserApi from '@/api/system/user'
 
 defineOptions({ name: 'SystemDept' })
 
