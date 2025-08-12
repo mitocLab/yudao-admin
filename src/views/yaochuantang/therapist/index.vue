@@ -8,17 +8,42 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="门店名称" prop="name">
+      <el-form-item label="姓名" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入门店名称"
+          placeholder="请输入姓名"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="门店状态" prop="status">
-        <el-select v-model="queryParams.status" class="!w-240px" clearable placeholder="门店状态">
+      <el-form-item label="擅长项目" prop="focusProject">
+        <el-select
+          v-model="queryParams.focusProject"
+          placeholder="请选择擅长项目"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="item in projectList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="所属门店" prop="baseShop">
+        <el-select
+          v-model="queryParams.baseShop"
+          placeholder="请选择所属门店"
+          clearable
+          class="!w-240px"
+        >
+          <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="技师状态" prop="status">
+        <el-select v-model="queryParams.status" class="!w-240px" clearable placeholder="技师状态">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
             :key="dict.value"
@@ -27,17 +52,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-220px"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -45,7 +59,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['yaochuantang:shop:create']"
+          v-hasPermi="['yaochuantang:therapist:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -54,7 +68,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['yaochuantang:shop:export']"
+          v-hasPermi="['yaochuantang:therapist:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -63,7 +77,7 @@
           plain
           :disabled="isEmpty(checkedIds)"
           @click="handleDeleteBatch"
-          v-hasPermi="['yaochuantang:shop:delete']"
+          v-hasPermi="['yaochuantang:therapist:delete']"
         >
           <Icon icon="ep:delete" class="mr-5px" /> 批量删除
         </el-button>
@@ -83,22 +97,34 @@
     >
       <el-table-column type="selection" width="55" />
       <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="门店 logo" min-width="100" prop="logo">
+      <el-table-column label="姓名" align="center" prop="name" />
+      <el-table-column label="简介" align="center" prop="introduction" />
+      <el-table-column label="技师头像" align="center" prop="logo">
         <template #default="scope">
-          <img v-if="scope.row.logo" :src="scope.row.logo" alt="门店 logo" class="h-50px" />
+          <img v-if="scope.row.logo" :src="scope.row.logo" alt="技师头像" class="h-50px" />
         </template>
       </el-table-column>
-      <el-table-column label="门店名称" align="center" prop="name" />
-      <el-table-column label="门店手机" align="center" prop="phone" />
-      <el-table-column label="地址" min-width="100" prop="detailAddress" />
-      <el-table-column label="营业时间" min-width="180">
+      <el-table-column label="擅长项目" align="center" prop="focusProject">
         <template #default="scope">
-          {{ scope.row.openingTime }} ~ {{ scope.row.closingTime }}
+          <span v-if="scope.row.focusProject">
+            {{ getProjectNames(scope.row.focusProject) }}
+          </span>
+          <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="开启状态" min-width="100" prop="status">
+      <el-table-column label="所属门店" align="center" prop="baseShop">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
+          <span v-if="scope.row.baseShop">
+            {{ getShopNames(scope.row.baseShop) }}
+          </span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="技师状态" align="center" prop="status">
+        <template #default="scope">
+          <el-tag :type="scope.row.status === CommonStatusEnum.ENABLE ? 'success' : 'danger'">
+            {{ getDictLabel(DICT_TYPE.COMMON_STATUS, scope.row.status) }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -114,7 +140,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['yaochuantang:shop:update']"
+            v-hasPermi="['yaochuantang:therapist:update']"
           >
             编辑
           </el-button>
@@ -122,7 +148,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['yaochuantang:shop:delete']"
+            v-hasPermi="['yaochuantang:therapist:delete']"
           >
             删除
           </el-button>
@@ -139,44 +165,79 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <ShopForm ref="formRef" @success="getList" />
+  <TherapistForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
+import { MassageProjectApi } from '@/api/yaochuantang/massageproject'
 import { ShopApi } from '@/api/yaochuantang/shop'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { TherapistApi, TherapistVO } from '@/api/yaochuantang/therapist'
+import { CommonStatusEnum } from '@/utils/constants'
+import { DICT_TYPE, getDictLabel, getIntDictOptions } from '@/utils/dict'
 import download from '@/utils/download'
 import { dateFormatter } from '@/utils/formatTime'
 import { isEmpty } from '@/utils/is'
-import ShopForm from './ShopForm.vue'
+import TherapistForm from './TherapistForm.vue'
 
-/** 瑶川堂门店 列表 */
-defineOptions({ name: 'Shop' })
+/** 瑶川堂技师 列表 */
+defineOptions({ name: 'Therapist' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<Shop[]>([]) // 列表的数据
+const list = ref<TherapistVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
+const shopList = ref<any[]>([]) // 门店列表
+const projectList = ref<any[]>([]) // 项目列表
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   name: undefined,
-  openingTime: [],
-  closingTime: [],
-  status: undefined,
-  createTime: []
+  focusProject: undefined,
+  baseShop: undefined,
+  status: CommonStatusEnum.ENABLE
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+/** 获取门店名称 */
+const getShopNames = (shopIds: string) => {
+  if (!shopIds || !shopList.value.length) return '-'
+  const ids = shopIds.split(',').map((id) => parseInt(id.trim()))
+  const names = shopList.value.filter((shop) => ids.includes(shop.id)).map((shop) => shop.name)
+  return names.length > 0 ? names.join(', ') : '-'
+}
+
+/** 获取项目名称 */
+const getProjectNames = (projectIds: string) => {
+  if (!projectIds || !projectList.value.length) return '-'
+  const ids = projectIds.split(',').map((id) => parseInt(id.trim()))
+  const names = projectList.value
+    .filter((project) => ids.includes(project.id))
+    .map((project) => project.name)
+  return names.length > 0 ? names.join(', ') : '-'
+}
+
+/** 加载门店和项目列表 */
+const loadReferenceData = async () => {
+  try {
+    const [shopData, projectData] = await Promise.all([
+      ShopApi.getShopSimpleList(),
+      MassageProjectApi.getMassageProjectSimpleList()
+    ])
+    shopList.value = shopData
+    projectList.value = projectData
+  } catch (error) {
+    console.error('加载参考数据失败:', error)
+  }
+}
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await ShopApi.getShopPage(queryParams)
-    console.log(data)
+    const data = await TherapistApi.getTherapistPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -208,26 +269,26 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await ShopApi.deleteShop(id)
+    await TherapistApi.deleteTherapist(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
   } catch {}
 }
 
-/** 批量删除瑶川堂门店 */
+/** 批量删除瑶川堂技师 */
 const handleDeleteBatch = async () => {
   try {
     // 删除的二次确认
     await message.delConfirm()
-    await ShopApi.deleteShopList(checkedIds.value)
+    await TherapistApi.deleteTherapistList(checkedIds.value)
     message.success(t('common.delSuccess'))
     await getList()
   } catch {}
 }
 
 const checkedIds = ref<number[]>([])
-const handleRowCheckboxChange = (records: Shop[]) => {
+const handleRowCheckboxChange = (records: TherapistVO[]) => {
   checkedIds.value = records.map((item) => item.id)
 }
 
@@ -238,8 +299,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await ShopApi.exportShop(queryParams)
-    download.excel(data, '瑶川堂门店.xls')
+    const data = await TherapistApi.exportTherapist(queryParams)
+    download.excel(data, '瑶川堂技师.xls')
   } catch {
   } finally {
     exportLoading.value = false
@@ -247,7 +308,8 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(() => {
-  getList()
+onMounted(async () => {
+  await loadReferenceData()
+  await getList()
 })
 </script>

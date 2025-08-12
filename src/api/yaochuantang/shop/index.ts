@@ -47,5 +47,10 @@ export const ShopApi = {
   // 导出瑶川堂门店 Excel
   exportShop: async (params) => {
     return await request.download({ url: `/yaochuantang/shop/export-excel`, params })
+  },
+
+  // 查询瑶川堂门店简易列表
+  getShopSimpleList: async () => {
+    return await request.get({ url: `/yaochuantang/shop/simple-list` })
   }
 }
