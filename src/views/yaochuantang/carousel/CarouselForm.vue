@@ -9,13 +9,13 @@
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="项目 logo" prop="logo">
+          <el-form-item label="轮播图" prop="logo">
             <UploadImg v-model="formData.logo" :limit="1" :is-show-tip="false" />
             <div style="font-size: 10px" class="pl-10px">推荐 180x180 图片分辨率</div>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="项目状态" prop="status">
+          <el-form-item label="轮播图状态" prop="status">
             <el-radio-group v-model="formData.status">
               <el-radio
                 v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
@@ -28,30 +28,8 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="项目名称" prop="name">
-            <el-input v-model="formData.name" placeholder="请输入项目名称" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="项目时长" prop="duration">
-            <el-input-number
-              v-model="formData.duration"
-              :min="0.5"
-              :max="100"
-              :step="0.5"
-              :precision="1"
-              placeholder="请输入项目时长"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="项目简介" prop="introduction">
-        <el-input v-model="formData.introduction" type="textarea" placeholder="请输入项目简介" />
-      </el-form-item>
-      <el-form-item label="项目流程" prop="process">
-        <Editor v-model="formData.process" height="150px" />
+      <el-form-item label="跳转地址" prop="redirectUrl">
+        <el-input v-model="formData.redirectUrl" placeholder="请输入跳转地址" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -61,12 +39,12 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { MassageProject, MassageProjectApi } from '@/api/yaochuantang/massageproject'
+import { CarouselApi } from '@/api/yaochuantang/carousel'
 import { CommonStatusEnum } from '@/utils/constants'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 
-/** 瑶川堂项目 表单 */
-defineOptions({ name: 'MassageProjectForm' })
+/** 瑶川堂轮播图 表单 */
+defineOptions({ name: 'CarouselForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -77,18 +55,14 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
-  name: undefined,
-  duration: undefined,
-  introduction: undefined,
-  process: undefined,
   logo: undefined,
+  redirectUrl: undefined,
   status: CommonStatusEnum.ENABLE
 })
 const formRules = reactive({
-  name: [{ required: true, message: '项目名称不能为空', trigger: 'blur' }],
-  duration: [{ required: true, message: '项目时长不能为空', trigger: 'blur' }],
-  logo: [{ required: true, message: '项目 logo不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '项目状态不能为空', trigger: 'blur' }]
+  logo: [{ required: true, message: '轮播图 logo不能为空', trigger: 'blur' }],
+  redirectUrl: [{ required: true, message: '轮播图跳转地址不能为空', trigger: 'blur' }],
+  status: [{ required: true, message: '轮播图状态不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
@@ -102,7 +76,7 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await MassageProjectApi.getMassageProject(id)
+      formData.value = await CarouselApi.getCarousel(id)
     } finally {
       formLoading.value = false
     }
@@ -118,12 +92,12 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as MassageProject
+    const data = formData.value as unknown as Carousel
     if (formType.value === 'create') {
-      await MassageProjectApi.createMassageProject(data)
+      await CarouselApi.createCarousel(data)
       message.success(t('common.createSuccess'))
     } else {
-      await MassageProjectApi.updateMassageProject(data)
+      await CarouselApi.updateCarousel(data)
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
@@ -138,11 +112,8 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    name: undefined,
-    duration: undefined,
-    introduction: undefined,
-    process: undefined,
     logo: undefined,
+    redirectUrl: undefined,
     status: CommonStatusEnum.ENABLE
   }
   formRef.value?.resetFields()

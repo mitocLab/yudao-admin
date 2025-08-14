@@ -19,7 +19,7 @@
             enter-active-class="animate__animated animate__bounceInLeft"
             tag="div"
           >
-            <img key="1" alt="" class="w-350px" src="@/assets/svgs/login-box-bg.svg" />
+            <img key="1" alt="" class="w-350px" src="@/assets/imgs/logo.png" />
             <div key="2" class="text-3xl text-white">{{ t('login.welcome') }}</div>
             <div key="3" class="mt-5 text-14px font-normal text-white">
               {{ t('login.message') }}
@@ -155,17 +155,17 @@ import { underlineToHump } from '@/utils'
 import { ElLoading } from 'element-plus'
 
 import { useDesign } from '@/hooks/web/useDesign'
-import { useAppStore } from '@/store/modules/app'
 import { useIcon } from '@/hooks/web/useIcon'
+import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 
 import * as LoginApi from '@/api/login'
-import * as authUtil from '@/utils/auth'
-import { ThemeSwitch } from '@/layout/components/ThemeSwitch'
 import { LocaleDropdown } from '@/layout/components/LocaleDropdown'
-import { LoginStateEnum, useFormValid, useLoginState } from './components/useLogin'
-import LoginFormTitle from './components/LoginFormTitle.vue'
+import { ThemeSwitch } from '@/layout/components/ThemeSwitch'
 import router from '@/router'
+import * as authUtil from '@/utils/auth'
+import LoginFormTitle from './components/LoginFormTitle.vue'
+import { LoginStateEnum, useFormValid, useLoginState } from './components/useLogin'
 
 defineOptions({ name: 'SocialLogin' })
 

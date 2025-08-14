@@ -133,10 +133,6 @@ const open = async (type: string, id?: number) => {
       ShopApi.getShopSimpleList()
     ])
 
-    // 先不进行过滤，确保数据能正常加载
-    console.log('门店数据:', shopData)
-    console.log('项目数据:', projectData)
-
     // 检查数据结构，如果包含status字段则进行过滤
     if (shopData.length > 0 && shopData[0].hasOwnProperty('status')) {
       shopList.value = shopData.filter((shop: any) => shop.status === CommonStatusEnum.ENABLE)

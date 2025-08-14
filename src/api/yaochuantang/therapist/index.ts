@@ -46,5 +46,10 @@ export const TherapistApi = {
   // 导出瑶川堂技师 Excel
   exportTherapist: async (params: any) => {
     return await request.download({ url: `/yaochuantang/therapist/export-excel`, params })
+  },
+
+  // 查询瑶川堂技师简易列表
+  getTherapistSimpleList: async () => {
+    return await request.get({ url: `/yaochuantang/therapist/simple-list` })
   }
 }

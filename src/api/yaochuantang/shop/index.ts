@@ -44,6 +44,11 @@ export const ShopApi = {
     return await request.delete({ url: `/yaochuantang/shop/delete?id=` + id })
   },
 
+  // 批量删除瑶川堂门店
+  deleteShopList: async (ids: number[]) => {
+    return await request.delete({ url: `/yaochuantang/shop/delete-list`, data: ids })
+  },
+
   // 导出瑶川堂门店 Excel
   exportShop: async (params) => {
     return await request.download({ url: `/yaochuantang/shop/export-excel`, params })

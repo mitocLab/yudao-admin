@@ -8,6 +8,7 @@ export interface MassageProjectVO {
   process: string // 项目流程
   logo: string // 项目 logo
   status: number // 项目状态
+  duration: number // 项目时长
 }
 
 // 瑶川堂项目 API
@@ -35,6 +36,11 @@ export const MassageProjectApi = {
   // 删除瑶川堂项目
   deleteMassageProject: async (id: number) => {
     return await request.delete({ url: `/yaochuantang/massage-project/delete?id=` + id })
+  },
+
+  // 批量删除瑶川堂项目
+  deleteMassageProjectList: async (ids: number[]) => {
+    return await request.delete({ url: `/yaochuantang/massage-project/delete-list`, data: ids })
   },
 
   // 导出瑶川堂项目 Excel
